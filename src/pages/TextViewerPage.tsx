@@ -1,17 +1,18 @@
 import { useEffect } from 'react'
-import { useParams, Link } from '@tanstack/react-router'
+import { useParams, useSearch, Link } from '@tanstack/react-router'
 import { useTextStore } from '../stores/textStore'
 import { useAuthStore } from '../stores/authStore'
 
 export function TextViewerPage() {
   const { textId } = useParams({ from: '/texts/$textId' })
+  const { section } = useSearch({ from: '/texts/$textId' })
   const { passage, passageLoading, passageError, fetchPassage } = useTextStore()
   const { user } = useAuthStore()
 
   useEffect(() => {
-    // Default: load section 001 of the text
-    void fetchPassage(`${textId}_001_000`)
-  }, [textId, fetchPassage])
+    const sectionStem = section ?? `${textId}_001_000`
+    void fetchPassage(sectionStem)
+  }, [textId, section, fetchPassage])
 
   return (
     <div className="text-viewer-page">
